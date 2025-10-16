@@ -18,6 +18,7 @@ A RAG chatbot on the Harry Potter book series built on n8n
 * Evaluation using GPT-4o mini, 100% Accuracy based on 100 domain specific trivia questions
 * The chatbot is configured to give excerpts from the book to support its answer whenever possible
 
+<img width="1060" height="126" alt="Screenshot 2568-10-12 at 04 35 31" src="https://github.com/user-attachments/assets/a2a8f1de-cbcf-4321-a0a9-afc587bcb510" />
 <img width="1068" height="962" alt="Screenshot 2568-10-17 at 06 16 05" src="https://github.com/user-attachments/assets/d70b5230-a375-4555-b1c9-82b18eea7864" />
 <img width="1068" height="962" alt="Screenshot 2568-10-17 at 06 17 27" src="https://github.com/user-attachments/assets/15cd4912-4cdb-4df9-b868-1ec834afe938" />
 <img width="1068" height="962" alt="Screenshot 2568-10-17 at 06 18 38" src="https://github.com/user-attachments/assets/c3d37762-8141-4944-b826-05127a31e800" />
