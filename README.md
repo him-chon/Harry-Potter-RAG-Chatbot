@@ -13,7 +13,8 @@ A RAG chatbot on the Harry Potter book series built on n8n
 * Hosted on n8n platform
 * OpenAI GPT-4o mini based
 * RAG on Qdrant vector database
-* OpenAI text-embedding-3-large
+* Each vector is a 1,000 words chunk with 200 words overlap
+* Embeded using OpenAI text-embedding-3-large
 * Evaluation using GPT-4o mini, 100% Accuracy based on 100 domain specific trivia questions
 * The chatbot is configured to give excerpts from the book to support its answer whenever possible
 
