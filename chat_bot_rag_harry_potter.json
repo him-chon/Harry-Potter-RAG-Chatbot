@@ -1,0 +1,464 @@
+{
+  "name": "Chatbot RAG",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "d5e60eb2-267c-4f68-aefe-439031bcaceb",
+      "name": "OpenAI Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        512,
+        240
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ci5n8Li0EKfKVmMp",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are Dobby the Elf, a helpful assistant providing information about the Harry Potter Book series. \n\n- Use [Qdrant Vector Store] to retrieve information that answers the query, never search online or use information from other sources\n\n- Be as accurate and detailed as possible.\n\n- Always quote the text retrieved from [Qdrant Vector Store]."
+        }
+      },
+      "id": "41174c8a-6ac8-42bd-900e-ca15196600c5",
+      "name": "Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        592,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {
+          "dimensions": 3072
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        816,
+        416
+      ],
+      "id": "b5e5b0b2-5556-4525-99a0-6cbb3201a619",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "ci5n8Li0EKfKVmMp",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "authentication": "basicAuth",
+        "initialMessages": "Hi! I'm Dobby the elf. You can ask me any question about the Harry Potter book series. I'm here to help!",
+        "options": {
+          "responseMode": "responseNodes"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        32
+      ],
+      "id": "705d1596-f63c-4860-9a18-894700f89386",
+      "name": "When chat message received",
+      "webhookId": "365543c5-3506-4724-becc-08ec17067bf1",
+      "alwaysOutputData": false,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "P0IBX7l2aBGGpdrU",
+          "name": "test01"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use this tool to gather information about Harry Potter book series for any inquiry regarding the story. This database contains Harry Potter: The Complete Collection.",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "harry_potter",
+          "mode": "list",
+          "cachedResultName": "harry_potter"
+        },
+        "topK": 20,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        816,
+        240
+      ],
+      "id": "32a1d81d-3712-44bf-97f0-759d84d18d8f",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "516XOKmD4MvIcq1J",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 544,
+        "width": 1696,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        80,
+        16
+      ],
+      "typeVersion": 1,
+      "id": "52abbfe5-9cb4-4f4c-a4c4-46ecfb3f060f",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "###  Qdrant Vector Database\nContains the entire Harry Potter book series. 1000 words per vector, 200 words overlap.",
+        "height": 112
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1088,
+        224
+      ],
+      "typeVersion": 1,
+      "id": "3bf0466f-30f4-4ad7-b67d-cad470a4ccb3",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "source": "googleSheets",
+        "documentId": {
+          "__rl": true,
+          "value": "13SFrLyj_kn5N3LjzFv2asQdoxSdL9awUF-SaOtIW0do",
+          "mode": "list",
+          "cachedResultName": "Harry_Potter_Test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13SFrLyj_kn5N3LjzFv2asQdoxSdL9awUF-SaOtIW0do/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13SFrLyj_kn5N3LjzFv2asQdoxSdL9awUF-SaOtIW0do/edit#gid=0"
+        }
+      },
+      "type": "n8n-nodes-base.evaluationTrigger",
+      "typeVersion": 4.7,
+      "position": [
+        160,
+        -176
+      ],
+      "id": "0c227a2f-39ef-4fac-8ce9-5b49c85b8f31",
+      "name": "When fetching a dataset row",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hxYPJMUX9gYBBO0I",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### Evaluation \n**Based on 100 Harry Potter trivia questions**",
+        "height": 304,
+        "width": 1696,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        80,
+        -304
+      ],
+      "typeVersion": 1,
+      "id": "bf724e21-665a-4bcf-81ff-418d7f8e0ca0",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1392,
+        -128
+      ],
+      "id": "e069e18d-a344-4a83-9c90-4da663c66805",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ci5n8Li0EKfKVmMp",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "message": "={{ $json.output }}",
+        "waitUserReply": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1,
+      "position": [
+        1264,
+        32
+      ],
+      "id": "356ee17c-d6aa-4a70-847f-e5f917acaeb1",
+      "name": "Respond to Chat"
+    },
+    {
+      "parameters": {
+        "operation": "checkIfEvaluating"
+      },
+      "type": "n8n-nodes-base.evaluation",
+      "typeVersion": 4.8,
+      "position": [
+        1008,
+        -176
+      ],
+      "id": "6b2abd2e-7512-47a4-bea0-01c7913b7842",
+      "name": "Evaluation Check"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7f944125-e224-4bd7-94c6-57771b2daa7f",
+              "name": "chatInput",
+              "value": "={{ $json.question }}",
+              "type": "string"
+            },
+            {
+              "id": "0b5d7649-2845-4632-9ed7-a4f249d4be24",
+              "name": "sessionId",
+              "value": "888",
+              "type": "string"
+            },
+            {
+              "id": "62e38857-e6ca-447c-bbdd-1c69496d1bb0",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        384,
+        -176
+      ],
+      "id": "fcae04ff-538c-4e32-9325-3b59129176ab",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 100
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        688,
+        240
+      ],
+      "id": "bda232e2-4845-4967-a4e3-dd6532b688bc",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "setMetrics",
+        "expectedAnswer": "={{ $('When fetching a dataset row').item.json.answer }}",
+        "actualAnswer": "={{ $json.output }}",
+        "prompt": "You are an expert factual evaluator assessing the accuracy of answers compared to established ground truths.\n\nEvaluate the factual correctness of a given output compared to the provided ground truth with score of 1 being correct, 0 being incorrect. Use detailed reasoning to thoroughly analyze all claims before determining the final score.\n\n# Scoring Criteria\n\n- 1: Correct - The output is correct based on the ground truth. \n- 0: Incorrect - The output is incorrect based on the ground truth\n\n# Evaluation Steps\n\n1. Summarize the output to contain only the answer\n2. Compared the summarized output to the ground truth if they are semantically the same\n3. Give a score of 1 if they are the same, 0 if not.\n\n# Output Format\n\nProvide:\n- The final score as integer (0, 1)\n\nAlways follow the JSON format below and return nothing else:\n{\n  \"score\": <number: integer from 0 to 1>\n}\n\n# Examples\n\n**Example 1:**\n\nInput:\n- Output: \"Hagrid's pet dragon was named Norbert. He was a Norwegian Ridgeback that Hagrid kept for a brief period during Harry's first year at Hogwarts. Hagrid was quite fond of Norbert, often expressing his affection and excitement about the dragon's growth and behavior.\n\nHere are some quotes regarding Norbert from the series:\n\nHagrid says: “I’ve decided to call him Norbert,” looking at the dragon with misty eyes. He expresses sentimentality about the dragon, referring to it affectionately and indicating it knows him.\n\nHagrid explains to Harry, Ron, and Hermione: “He’s too little. He’d die.” This shows Hagrid's concern and attachment to Norbert, who was growing rapidly.\n\nHarry later reflects that they need to help Norbert, noting, “just let him go,” suggesting that keeping a dragon is dangerous and illegal.\n\nNorbert was a significant part of Hagrid's character, showcasing his love for magical creatures, especially the more monstrous ones.\"\n- Ground Truth: \"Norbert\"\n\nExpected Output:\n{\n  \"score\": 1\n}\n\n**Example 2:**\n\nInput:\n- Output: \"Harry Potter has striking green eyes. This characteristic is so notable that it is often compared to his mother, Lily Potter, who also had green eyes. The quote from the text states:\n\n“‘You have your mother’s eyes. It seems only yesterday she was in here herself, buying her first wand.’”\n\nThis detail highlights the connection between Harry and his mother, even after her passing.\"\n- Ground Truth: \"Green\"\n\nExpected Output:\n{\n  \"score\": 1\n}\n\n**Example 3:**\n\nInput:\n- Output: \"Draco Malfoy's full name is Draco Lucius Malfoy. This middle name reflects his family's heritage, with both his father, Lucius Malfoy, and his grandfather, Abraxas Malfoy, being prominent figures in the wizarding world.\"\n- Ground Truth: \"Lucius\"\n\nExpected Output:\n{\n  \"score\": 1\n}\n\n**Example 4:**\n\nInput:\n- Output: \"Lily Potter has bright green eyes, which are a significant characteristic in the series. Harry Potter inherits this trait from her, and it's often noted throughout the story. One example that highlights this is when a character observes, \"You have your mother's eyes,\" making the connection between Harry and Lily.\"\n- Ground Truth: \"Blue\"\n\nExpected Output:\n{\n  \"score\": 0\n}\n\n# Notes\n\n- If the output contains the ground truth, then the output is correct.",
+        "options": {
+          "metricName": "Accuracy"
+        }
+      },
+      "type": "n8n-nodes-base.evaluation",
+      "typeVersion": 4.8,
+      "position": [
+        1312,
+        -272
+      ],
+      "id": "d492c7bf-ea60-43f2-80a9-a8476bb02ea2",
+      "name": "LLM Evaluation"
+    },
+    {
+      "parameters": {
+        "content": "## Harry Potter Chatbot\n### Ask me anything about Harry Potter book  series."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        96,
+        32
+      ],
+      "typeVersion": 1,
+      "id": "d9627ff9-0cc5-4991-82cd-89c486f8cdbb",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent": {
+      "main": [
+        [
+          {
+            "node": "Evaluation Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When fetching a dataset row": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "LLM Evaluation",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluation Check": {
+      "main": [
+        [
+          {
+            "node": "LLM Evaluation",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM Evaluation": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f620b213-6bc2-4741-9d39-819dc596e4e0",
+  "meta": {
+    "templateId": "self-building-ai-agent",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "166dd41182f01e6aae716a000b956facc0395ae619d8e2f3edccac536e1719f6"
+  },
+  "id": "rMRFJ6tVkW2PONiL",
+  "tags": []
+}
